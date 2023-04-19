@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import PostController from "./controllers/posts-controller.js";
-import GeolocationController from "./api/geolocation/geolocation-controller.js";
+import GeolocationController from "./api/geolocation-api.js";
 import UserController from "./controllers/users-controller.js";
 import AuthController from "./controllers/auth-controller.js";
 // TODO: add env variable for connection string
