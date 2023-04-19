@@ -1,8 +1,10 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const schema = mongoose.Schema({
-    title: String,
-    time: Date,
-}, {collection: 'tag'});
+const schema = mongoose.Schema(
+  {
+    title: { type: String, required: true, default: "" },
+    createdAt: { type: Date, required: true, default: Date.now() },
+  },
+  { collection: "tag" }
+);
 export default schema;
-

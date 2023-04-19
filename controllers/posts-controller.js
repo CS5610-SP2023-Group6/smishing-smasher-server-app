@@ -5,25 +5,46 @@ const findAllPosts = async (req, res) => {
   res.json(posts);
 };
 
-const findPostById = async (postId) => {
-  console.log("find post", postId);
+const findPostById = async (req, res) => {
+  console.log("find post", req.body._id);
 
-  const post = await postsDao.findPostById(postId);
-  return post;
+  const post = await postsDao.findPostById(req.body._id);
+  res.json(post);
 };
 
-const findPostsByContents = async (body) => {
-  console.log("find post", body);
+const findPostsByAuthorId = async (req, res) => {
+  console.log("find posts", req.body.authorID);
 
-  const post = await postsDao.findPostsByContents(body);
-  return post;
+  const posts = await postsDao.findPostByAuthorID(req.body.authorID);
+  res.json(posts);
 };
 
-const findPostsByAddress = async (body) => {
-  console.log("find post", body);
+const findPostsByNickname = async (req, res) => {
+  console.log("find posts", req.params.nickname);
 
-  const post = await postsDao.findPostsByAddress(body);
-  return post;
+  const posts = await postsDao.findPostsByNickname(req.params.nickname);
+  res.json(posts);
+};
+
+const findPostsByTime = async (req, res) => {
+  console.log("find posts ", req.body.start, " to ", req.body.end);
+
+  const posts = await postsDao.findPostsByTime(req.body.start, req.body.end);
+  res.json(posts);
+};
+
+const findPostsByContents = async (req, res) => {
+  console.log("find post", req.body);
+
+  const post = await postsDao.findPostsByContents(req.body);
+  res.json(post);
+};
+
+const findPostsByAddress = async (req, res) => {
+  console.log("find post", req.body);
+
+  const posts = await postsDao.findPostsByAddress(req.body);
+  res.json(posts);
 };
 
 const createPost = async (req, res) => {
@@ -38,7 +59,7 @@ const createPost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const postIdToDelete = req.body.pid;
+  const postIdToDelete = req.body._id;
   const status = await postsDao.deletePost(postIdToDelete);
   res.json(status);
 };
@@ -49,12 +70,16 @@ const updatePost = async (req, res) => {
   const status = await postsDao.updatePost(postIdToUpdate, updates);
   res.json(status);
 };
+
 export default (app) => {
   app.post("/api/posts", createPost);
-  app.get("/api/posts", findAllPosts);
+  app.get("/api/posts/all", findAllPosts);
   app.post("/api/posts/mul", findPostsByContents);
   app.post("/api/posts/one", findPostsByAddress);
   app.post("/api/posts/id", findPostById);
+  app.post("/api/posts/author", findPostsByAuthorId);
+  app.get("/api/posts/nickname/:nickname", findPostsByNickname);
+  app.post("/api/posts/time", findPostsByTime);
   app.post("/api/posts/update", updatePost);
   app.post("/api/posts/delete", deletePost);
 };
