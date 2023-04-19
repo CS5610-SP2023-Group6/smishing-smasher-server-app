@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import PostController from "./controllers/posts-controller.js";
 import GeolocationController from "./api/geolocation/geolocation-controller.js";
-import UserController from "./controllers/user-controller.js";
+import UserController from "./controllers/users-controller.js";
 import AuthController from "./controllers/auth-controller.js";
 // TODO: add env variable for connection string
 const CONNECTION_STRING = process.env.DB_CONNECTION;
@@ -14,6 +14,19 @@ const CONNECTION_STRING = process.env.DB_CONNECTION;
 mongoose.connect(
   "mongodb+srv://root:smishingsmasher@smishing-smasher.udn2ewp.mongodb.net/smishing-smasher?retryWrites=true&w=majority"
 );
+
+const whiteUrlList = [
+  '/api/users/login',
+  '/api/users/register',
+  '/api/users/logout',
+  '/api/users/id',
+  '/api/users/email',
+  '/api/users/nickname',
+  '/api/posts/mul',
+  '/api/posts/one',
+  '/api/posts/id',
+  '/api/posts/all',
+]
 
 const app = express();
 app.use(bodyParser.json());
@@ -39,7 +52,7 @@ app.use(
 );
 app.use(function (req, res, next) {
   const { userInfo } = req.session;
-  if (req.url !== '/api/users/login' && req.url !== '/api/users/register' && req.url !== '/api/users/logout') {
+  if (!whiteUrlList.includes(req.url)) {
     if (!userInfo) {
       res.send({ flag: false, status: 403, msg: 'cookies outdated' });
     } else {
