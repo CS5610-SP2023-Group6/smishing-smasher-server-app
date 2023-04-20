@@ -1,4 +1,5 @@
-import * as commentsDao from "../dao/posts/comments-dao.js";
+import * as commentsDao from "../dao/comments/comments-dao.js";
+import { ObjectId } from "mongodb";
 
 const findAllComments = async (req, res) => {
   const comments = await commentsDao.findAllComments();
@@ -6,22 +7,22 @@ const findAllComments = async (req, res) => {
 };
 
 const findCommentById = async (req, res) => {
-  const comment = await commentsDao.findCommentById(req._id);
+  const comment = await commentsDao.findCommentById(new ObjectId(req.params.id));
   res.json(comment);
 }
 
 const findCommentsByAuthorId = async (req, res) => {
-  const comments = await commentsDao.findCommentById(req.authorID);
+  const comments = await commentsDao.findCommentsByAuthorID(new ObjectId(req.params.author));
   res.json(comments);
 }
 
-const findCommentsByNickname = async (req, res) => {
-  const comments = await commentsDao.findPostsByNickname(req.params.nickname);
+const findCommentsByPostID = async (req, res) => {
+  const comments = await commentsDao.findCommentsByPostID(new ObjectId(req.params.post));
   res.json(comments);
 };
 
 const findCommentsByContents = async (req, res) => {
-  const comments = await commentsDao.findCommentById(req.text);
+  const comments = await commentsDao.findCommentsByContents(req.body.text);
   res.json(comments);
 }
 
@@ -32,6 +33,8 @@ const findCommentsByTime = async (req, res) => {
 
 const createComment = async (req, res) => {
   const newComment = req.body;
+  newComment.authorID = new ObjectId(newComment.authorID);
+  newComment.postID = new ObjectId(newComment.postID);
   newComment.creeatedAt = Date.now();
   newComment.thumbUp = 0;
   newComment.thumbDown = 0;
@@ -55,12 +58,12 @@ const updateComment = async (req, res) => {
 
 export default (app) => {
   app.get("/api/comments/all", findAllComments);
-  app.post("/api/comments/id", findCommentById);
-  app.post("/api/comments/author", findCommentsByAuthorId);
-  app.get("/api/comments/nickname/:nickname", findCommentsByNickname);
-  app.post("/api/comments/contents", findCommentsByContents);
+  app.get("/api/comments/id/:id", findCommentById);
+  app.get("/api/comments/author/:author", findCommentsByAuthorId);
+  app.get("/api/comments/post/:post", findCommentsByPostID);
+  app.post("/api/comments/content", findCommentsByContents);
   app.post("/api/comments/time", findCommentsByTime);
-  app.post("/api/comments", createComment);
+  app.post("/api/comments/create", createComment);
   app.post("/api/comments/delete", deleteComment);
   app.post("/api/comments/update", updateComment);
 }

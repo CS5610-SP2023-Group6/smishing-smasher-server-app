@@ -20,7 +20,6 @@ const AuthController = (app) => {
       res.status(422).json({ msg: "complete address is required" });
       return;
     }
-    req.body.password = bcrypt.hashSync(password, 10);
     const user = await usersDao.findUserByEmail(email);
     if (user) {
       res.status(409).json({ msg: "user has existed" });
@@ -79,7 +78,7 @@ const AuthController = (app) => {
 
   app.post("/api/users/register", register);
   app.post("/api/users/login", login);
-  app.post("/api/users/profile", profile);
+  app.get("/api/users/profile", profile);
   app.post("/api/users/logout", logout);
   app.post("/api/users/edit", editProfile);
 };

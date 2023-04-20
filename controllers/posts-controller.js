@@ -1,4 +1,5 @@
 import * as postsDao from "../dao/posts/posts-dao.js";
+import { ObjectId } from "mongodb";
 
 const findAllPosts = async (req, res) => {
   const posts = await postsDao.findAllPosts();
@@ -6,23 +7,16 @@ const findAllPosts = async (req, res) => {
 };
 
 const findPostById = async (req, res) => {
-  console.log("find post", req.body._id);
+  console.log("find post", req.params.id);
 
-  const post = await postsDao.findPostById(req.body._id);
+  const post = await postsDao.findPostById(new ObjectId(req.params.id));
   res.json(post);
 };
 
 const findPostsByAuthorId = async (req, res) => {
-  console.log("find posts", req.body.authorID);
+  console.log("find posts", req.params.author);
 
-  const posts = await postsDao.findPostByAuthorID(req.body.authorID);
-  res.json(posts);
-};
-
-const findPostsByNickname = async (req, res) => {
-  console.log("find posts", req.params.nickname);
-
-  const posts = await postsDao.findPostsByNickname(req.params.nickname);
+  const posts = await postsDao.findPostByAuthorID(new ObjectId(req.params.author));
   res.json(posts);
 };
 
@@ -49,6 +43,7 @@ const findPostsByAddress = async (req, res) => {
 
 const createPost = async (req, res) => {
   const newpost = req.body;
+  newpost.authorID = new ObjectId(newpost.authorID);
   newpost.thumbUp = 0;
   newpost.thumbDown = 0;
   newpost.endorsement = 0;
@@ -72,13 +67,12 @@ const updatePost = async (req, res) => {
 };
 
 export default (app) => {
-  app.post("/api/posts", createPost);
+  app.post("/api/posts/create", createPost);
   app.get("/api/posts/all", findAllPosts);
-  app.post("/api/posts/mul", findPostsByContents);
-  app.post("/api/posts/one", findPostsByAddress);
-  app.post("/api/posts/id", findPostById);
-  app.post("/api/posts/author", findPostsByAuthorId);
-  app.get("/api/posts/nickname/:nickname", findPostsByNickname);
+  app.post("/api/posts/content", findPostsByContents);
+  app.post("/api/posts/address", findPostsByAddress);
+  app.get("/api/posts/id/:id", findPostById);
+  app.get("/api/posts/author/:author", findPostsByAuthorId);
   app.post("/api/posts/time", findPostsByTime);
   app.post("/api/posts/update", updatePost);
   app.post("/api/posts/delete", deletePost);
