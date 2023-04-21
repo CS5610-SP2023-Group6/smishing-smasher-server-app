@@ -47,6 +47,23 @@ const AuthController = (app) => {
     }
   };
 
+  const loginByApi = async (req, res) => {
+    const email = req.body.email;
+    if (!email) {
+      res.status(422).json({ msg: "email is required" });
+      return;
+    }
+    const user = await usersDao.findUserByEmail(email);
+    if (user) {
+      console.log(email);
+      req.session["currentUser"] = user;
+      req.session.userInfo = { email };
+      res.status(200).json({ msg: "login success" });
+    } else {
+      res.status(404).json({ msg: "login failed" });
+    }
+  }
+
   const profile = async (req, res) => {
     const currentUser = req.session["currentUser"];
     if (!currentUser) {
@@ -77,6 +94,7 @@ const AuthController = (app) => {
   };
 
   app.post("/api/users/register", register);
+  app.post("/api/users/alogin", loginByApi);
   app.post("/api/users/login", login);
   app.get("/api/users/profile", profile);
   app.post("/api/users/logout", logout);
