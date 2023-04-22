@@ -87,6 +87,14 @@ const AuthController = (app) => {
   const editProfile = async (req, res) => {
     const currentUser = req.session["currentUser"];
     const uid = currentUser._id;
+    const updates = req.body;
+    const body = await usersDao.updateUser(uid, updates);
+    res.status(200).json(currentUser);
+  };
+
+  const editPassword = async (req, res) => {
+    const currentUser = req.session["currentUser"];
+    const uid = currentUser._id;
     const password = req.body.password;
     req.body.password = bcrypt.hashSync(password, 10);
     const updates = req.body;
@@ -100,5 +108,6 @@ const AuthController = (app) => {
   app.get("/api/users/profile", profile);
   app.post("/api/users/logout", logout);
   app.post("/api/users/edit", editProfile);
+  app.post("/api/users/password", editPassword);
 };
 export default AuthController;
