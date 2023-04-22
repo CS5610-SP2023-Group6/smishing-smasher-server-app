@@ -78,11 +78,19 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const userIdToUpdate = req.body._id;
   const updates = req.body;
-  const password = req.body.password;
-  req.body.password = bcrypt.hashSync(password, 10);
   const status = await usersDao.updateUser(userIdToUpdate, updates);
   res.json(status);
 };
+
+const resetPassword = async (req, res) => {
+  const userIdToUpdate = req.body._id;
+  const updates = req.body;
+  req.body.password = bcrypt.hashSync(req.body.password, 10);
+  const status = await usersDao.updateUser(userIdToUpdate, updates);
+  res.json(status);
+};
+
+
 export default (app) => {
   app.post("/api/users/create", createUser);
   app.get("/api/users/all", findAllUser);
@@ -93,4 +101,5 @@ export default (app) => {
   app.post("/api/users/birthday", findUsersByBirth);
   app.post("/api/users/update", updateUser);
   app.post("/api/users/delete", deleteUser);
+  app.post("/api/users/reset", resetPassword);
 };
