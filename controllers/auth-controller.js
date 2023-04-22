@@ -74,6 +74,34 @@ const AuthController = (app) => {
     res.json(currentUser);
   };
 
+  const following = async (req, res) => {
+    const currentUser = req.session["currentUser"];
+    if (!currentUser) {
+      res.status(404).json({ msg: "please login first" });
+      return;
+    }
+    currentUser.following.push(req.body.id);
+    const uid = currentUser._id;
+    const body = await usersDao.updateUser(uid, currentUser);
+    res.json(currentUser);
+  };
+
+  const unfollowing = async (req, res) => {
+    const currentUser = req.session["currentUser"];
+    if (!currentUser) {
+      res.status(404).json({ msg: "please login first" });
+      return;
+    }
+    currentUser.following.map((val, i) => {
+      if (val === req.body.id) {
+        currentUser.following.splice(i, 1);
+      }
+    })
+    const uid = currentUser._id;
+    const body = await usersDao.updateUser(uid, currentUser);
+    res.json(currentUser);
+  };
+
   const logout = async (req, res) => {
     const currentUser = req.session["currentUser"];
     if (currentUser) {
@@ -106,6 +134,8 @@ const AuthController = (app) => {
   app.post("/api/users/alogin", loginByApi);
   app.post("/api/users/login", login);
   app.get("/api/users/profile", profile);
+  app.post("/api/users/following", following);
+  app.post("/api/users/unfollowing", unfollowing);
   app.post("/api/users/logout", logout);
   app.post("/api/users/edit", editProfile);
   app.post("/api/users/password", editPassword);

@@ -1,4 +1,5 @@
 import * as postsDao from "../dao/posts/posts-dao.js";
+import * as userDao from "../dao/users/users-dao.js";
 import { ObjectId } from "mongodb";
 
 const findAllPosts = async (req, res) => {
@@ -43,6 +44,8 @@ const findPostsByAddress = async (req, res) => {
 
 const createPost = async (req, res) => {
   const newpost = req.body;
+  const strId = newpost.authorID;
+  console.log(strId);
   newpost.authorID = new ObjectId(newpost.authorID);
   newpost.thumbUp = 0;
   newpost.thumbDown = 0;
@@ -50,6 +53,11 @@ const createPost = async (req, res) => {
   newpost.comments = [];
   newpost.time = new Date().getTime() + "";
   const insertedpost = await postsDao.createPost(newpost);
+  const author = await userDao.findUserById(strId);
+  console.log(author);
+  console.log(insertedpost);
+  author.posts.push(insertedpost._id);
+  const ress = await userDao.updateUser(strId, author);
   res.json(insertedpost);
 };
 

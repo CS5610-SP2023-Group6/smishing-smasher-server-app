@@ -1,4 +1,6 @@
 import * as commentsDao from "../dao/comments/comments-dao.js";
+import * as postsDao from "../dao/posts/posts-dao.js";
+import * as userDao from "../dao/users/users-dao.js";
 import { ObjectId } from "mongodb";
 
 const findAllComments = async (req, res) => {
@@ -33,6 +35,8 @@ const findCommentsByTime = async (req, res) => {
 
 const createComment = async (req, res) => {
   const newComment = req.body;
+  const authorIDstr = newComment.authorID;
+  const postIDstr = newComment.postID;
   newComment.authorID = new ObjectId(newComment.authorID);
   newComment.postID = new ObjectId(newComment.postID);
   newComment.creeatedAt = Date.now();
@@ -40,6 +44,12 @@ const createComment = async (req, res) => {
   newComment.thumbDown = 0;
 
   const insertedComment = await commentsDao.createComment(newComment);
+  const author = await userDao.findUserById(authorIDstr);
+  const post = await postsDao.findPostById(postIDstr);
+  author.comments.push(insertedComment._id);
+  post.comments.push(insertedComment._id);
+  const res1 = await userDao.updateUser(authorIDstr, author);
+  const res2 = await postsDao.updatePost(postIDstr, post);
   res.json(insertedComment);
 };
 
