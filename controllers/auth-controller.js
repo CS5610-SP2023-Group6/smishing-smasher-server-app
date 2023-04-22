@@ -25,6 +25,7 @@ const AuthController = (app) => {
       res.status(409).json({ msg: "user has existed" });
       return;
     }
+    req.body.password = bcrypt.hashSync(password, 10);
     const newUser = await usersDao.createUser(req.body);
     req.session["currentUser"] = newUser;
     res.json(newUser);

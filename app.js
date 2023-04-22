@@ -9,6 +9,7 @@ import GeolocationController from "./api/geolocation-api.js";
 import UserController from "./controllers/users-controller.js";
 import CommentsController from "./controllers/comments-controller.js";
 import TagsController from "./controllers/tags-controller.js";
+import UploadController from "./controllers/upload-controller.js";
 import AuthController from "./controllers/auth-controller.js";
 // TODO: add env variable for connection string
 const CONNECTION_STRING = process.env.DB_CONNECTION;
@@ -20,8 +21,6 @@ mongoose.connect(
 const blackUrlList = [
   "/api/users/profile",
   "/api/users/edit",
-  "/api/upload",
-  "/api/files",
   "/api/users/create",
   "/api/users/update",
   "/api/users/delete",
@@ -76,6 +75,7 @@ GeolocationController(app);
 UserController(app);
 CommentsController(app);
 TagsController(app);
+UploadController(app);
 AuthController(app);
 
 app.listen(process.env.PORT || 4000);
