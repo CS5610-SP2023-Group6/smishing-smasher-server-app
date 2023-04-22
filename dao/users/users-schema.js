@@ -5,7 +5,7 @@ const schema = mongoose.Schema(
     nickname: { type: String, required: true },
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
-    profilePicture: String,
+    profilePicture: {type: String, default: '6442a2dc66674f9ee9472690'},
     address1: { type: String, required: true },
     address2: {type: String, default: ''},
     city: { type: String, required: true },

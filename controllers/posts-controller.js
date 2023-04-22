@@ -61,6 +61,7 @@ const deletePost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   const postIdToUpdate = req.body._id;
+  req.body.authorID = new ObjectId(req.body.authorID);
   const updates = req.body;
   const status = await postsDao.updatePost(postIdToUpdate, updates);
   res.json(status);

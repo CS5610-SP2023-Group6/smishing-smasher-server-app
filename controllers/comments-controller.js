@@ -51,6 +51,8 @@ const deleteComment = async (req, res) => {
 
 const updateComment = async (req, res) => {
   const commentIdToUpdate = req.body._id;
+  req.body.authorID = new ObjectId(req.body.authorID);
+  req.body.postID = new ObjectId(req.body.postID);
   const updates = req.body;
   const status = await commentsDao.updateComment(commentIdToUpdate, updates);
   res.json(status);
