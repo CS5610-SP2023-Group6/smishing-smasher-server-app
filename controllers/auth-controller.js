@@ -130,6 +130,14 @@ const AuthController = (app) => {
     res.status(200).json(currentUser);
   };
 
+  const addHistory = async (req, res) => {
+    const currentUser = req.session["currentUser"];
+    currentUser.history.push(req.body);
+    const uid = currentUser._id;
+    const body = await usersDao.updateUser(uid, currentUser);
+    res.status(200).json(currentUser);
+  };
+
   app.post("/api/users/register", register);
   app.post("/api/users/alogin", loginByApi);
   app.post("/api/users/login", login);
@@ -139,5 +147,6 @@ const AuthController = (app) => {
   app.post("/api/users/logout", logout);
   app.post("/api/users/edit", editProfile);
   app.post("/api/users/password", editPassword);
+  app.post("/api/users/search", addHistory);
 };
 export default AuthController;
