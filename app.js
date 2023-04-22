@@ -61,7 +61,7 @@ app.use(function (req, res, next) {
   const { userInfo } = req.session;
   if (blackUrlList.includes(req.url)) {
     if (!userInfo) {
-      res.send({ flag: false, status: 403, msg: 'cookies outdated' });
+      res.send({ flag: false, status: 403, msg: 'cookies outdated', email: 0 });
     } else {
       next();
     }
