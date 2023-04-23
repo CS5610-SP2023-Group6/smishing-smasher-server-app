@@ -80,7 +80,7 @@ const AuthController = (app) => {
       res.status(404).json({ msg: "please login first" });
       return;
     }
-    currentUser.following.push(req.body.id);
+    currentUser.following.unshift(req.body.id);
     const uid = currentUser._id;
     const body = await usersDao.updateUser(uid, currentUser);
     res.json(currentUser);
@@ -92,11 +92,10 @@ const AuthController = (app) => {
       res.status(404).json({ msg: "please login first" });
       return;
     }
-    currentUser.following.map((val, i) => {
-      if (val === req.body.id) {
-        currentUser.following.splice(i, 1);
-      }
-    })
+    const index = following.findIndex((element) => element === req.body.id);
+    if (index !== -1) {
+      following.splice(index, 1);
+    }
     const uid = currentUser._id;
     const body = await usersDao.updateUser(uid, currentUser);
     res.json(currentUser);
@@ -132,7 +131,7 @@ const AuthController = (app) => {
 
   const addHistory = async (req, res) => {
     const currentUser = req.session["currentUser"];
-    currentUser.history.push(req.body);
+    currentUser.history.unshift(req.body);
     const uid = currentUser._id;
     const body = await usersDao.updateUser(uid, currentUser);
     res.status(200).json(currentUser);

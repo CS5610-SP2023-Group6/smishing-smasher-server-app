@@ -56,7 +56,7 @@ const createPost = async (req, res) => {
   const author = await userDao.findUserById(strId);
   console.log(author);
   console.log(insertedpost);
-  author.posts.push(insertedpost._id);
+  author.posts.unshift(insertedpost._id);
   const ress = await userDao.updateUser(strId, author);
   res.json(insertedpost);
 };
