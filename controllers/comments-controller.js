@@ -46,8 +46,8 @@ const createComment = async (req, res) => {
   const insertedComment = await commentsDao.createComment(newComment);
   const author = await userDao.findUserById(authorIDstr);
   const post = await postsDao.findPostById(postIDstr);
-  author.comments.push(insertedComment._id);
-  post.comments.push(insertedComment._id);
+  author.comments.unshift(insertedComment._id);
+  post.comments.unshift(insertedComment._id);
   const res1 = await userDao.updateUser(authorIDstr, author);
   const res2 = await postsDao.updatePost(postIDstr, post);
   res.json(insertedComment);
