@@ -53,7 +53,7 @@ app.use(
 );
 app.use(
   cors({
-    credentials: true,
+
     origin: ['http://localhost:3000', 'https://6445bea710e66e0008489617--teal-donut-ecd8e1.netlify.app/'],
   })
 );
