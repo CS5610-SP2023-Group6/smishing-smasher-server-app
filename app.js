@@ -15,59 +15,56 @@ import AuthController from "./controllers/auth-controller.js";
 const CONNECTION_STRING = process.env.DB_CONNECTION;
 
 mongoose.connect(
-  "mongodb+srv://root:smishingsmasher@smishing-smasher.udn2ewp.mongodb.net/smishing-smasher?retryWrites=true&w=majority"
+    "mongodb+srv://root:smishingsmasher@smishing-smasher.udn2ewp.mongodb.net/smishing-smasher?retryWrites=true&w=majority"
 );
 
 const blackUrlList = [
-  "/api/users/profile",
-  "/api/users/edit",
-  "/api/users/create",
-  "/api/users/update",
-  "/api/users/delete",
-  "/api/tags/create",
-  "/api/tags/delete",
-  "/api/tags/update",
-  "/api/posts/create",
-  "/api/posts/update",
-  "/api/posts/delete",
-  "/api/comments/create",
-  "/api/comments/delete",
-  "/api/comments/update",
+    "/api/users/profile",
+    "/api/users/edit",
+    "/api/users/create",
+    "/api/users/update",
+    "/api/users/delete",
+    "/api/tags/create",
+    "/api/tags/delete",
+    "/api/tags/update",
+    "/api/posts/create",
+    "/api/posts/update",
+    "/api/posts/delete",
+    "/api/comments/create",
+    "/api/comments/delete",
+    "/api/comments/update",
 ]
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(
-  session({
-    secret: "sessionKey",
-    name: 'token',
-    resave: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24
-    },
-    saveUninitialized: true,
-    rolling: true,
-  })
+    session({
+        secret: "sessionKey",
+        name: 'token',
+        resave: false,
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24
+        },
+        saveUninitialized: true,
+        rolling: true,
+    })
 );
 app.use(
-  cors({
-
-    origin: ['http://localhost:3000', 'https://6445bea710e66e0008489617--teal-donut-ecd8e1.netlify.app/'],
-  })
+    cors()
 );
 app.use(function (req, res, next) {
-  const { userInfo } = req.session;
-  if (blackUrlList.includes(req.url)) {
-    if (!userInfo) {
-      res.send({ flag: false, status: 403, msg: 'cookies outdated', email: 0 });
+    const {userInfo} = req.session;
+    if (blackUrlList.includes(req.url)) {
+        if (!userInfo) {
+            res.send({flag: false, status: 403, msg: 'cookies outdated', email: 0});
+        } else {
+            next();
+        }
     } else {
-      next();
+        next();
     }
-  } else {
-    next();
-  }
 });
 app.use(express.json());
 PostController(app);
