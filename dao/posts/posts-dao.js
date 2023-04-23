@@ -17,7 +17,7 @@ export const findPostsByContents = (body) => {
     }
     console.log(queries);
   });
-  return postsModel.find({ $and: queries });
+  return postsModel.find({ $or: queries });
 };
 export const findPostsByAddress = (body) => {
   const queries = [];
